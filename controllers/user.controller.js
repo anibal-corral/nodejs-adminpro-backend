@@ -2,6 +2,7 @@ const { json } = require("express");
 const bcrypt = require('bcryptjs');
 
 const User = require("../models/user.model");
+const { generateJWT } = require("../helpers/jwt");
 const getUsers =  async (req, res)=>{
     const users = await User.find();
     res.json({
@@ -28,9 +29,11 @@ const getUsers =  async (req, res)=>{
             user.pwd = bcrypt.hashSync(pwd, salt);
 
             await user.save();
+            const token = await generateJWT(user.id)
             res.json({
                 ok:true,
-                user
+                user,
+                token
             })
         } catch (error) {
             console.log(error);
