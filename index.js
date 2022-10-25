@@ -8,19 +8,15 @@ const {dbConnection} = require('./database/config');
 const app = express();
 //CORS
 app.use(cors())
+//Red and parser body
+app.use(express.json());
 //Database
 dbConnection();
 // console.log(process.env);
 //Routes
-app.get('/',(req, res)=>{
+app.use('/api/users',require('./routes/user.routes'));
+app.use('/api/login',require('./routes/auth.routes'));
 
-    res.json({
-        ok:true,
-        msg:'Hello world'
-    })
-
-    }
-);
 
 app.listen(process.env.PORT, ()=>{
     console.log("Server runing on port" + process.env.PORT);
