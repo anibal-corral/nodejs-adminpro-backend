@@ -2,11 +2,13 @@ const { Router} = require('express');
 const {check} =require('express-validator');
 const {getUsers, saveUser, updateUser,deleteUser} = require('../controllers/user.controller');
 const {validateFields}=require('../middlewares/field-validate');
+const { validateJWT } = require('../middlewares/validate-jwt');
 const router = Router();
 
-router.get('/',getUsers);
+router.get('/',[ validateJWT],getUsers);
 router.post('/',
 [
+    
     check('name',"Name is mandatory").not().isEmpty(),
     check('pwd',"Password is mandatory").not().isEmpty(),
     check('email', "Email is mandatory").isEmail(),
@@ -15,12 +17,13 @@ router.post('/',
 saveUser);
 router.put('/:id',
 [
+    validateJWT,
     check('name',"Name is mandatory").not().isEmpty(),
     check('pwd',"Password is mandatory").not().isEmpty(),
     check('email', "Email is mandatory").isEmail(),
     validateFields,
 ],
 updateUser);
-router.delete('/:id',deleteUser);
+router.delete('/:id',[validateJWT],deleteUser);
 
 module.exports = router;
