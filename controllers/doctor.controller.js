@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const Doctor = require("../models/doctor.model");
 const { generateJWT } = require("../helpers/jwt");
 const getDoctors =  async (req, res)=>{
-    const doctors = await Doctor.find();
+    const doctors = await Doctor.find().populate('hospital').populate('user');
     res.json({
         ok:true,
         doctors
@@ -13,27 +13,30 @@ const getDoctors =  async (req, res)=>{
     }
 
     const saveDoctor = async (req, res)=>{
-        const {email, pwd, name} =req.body;
+        
+        const uid = req.uid;
+        const hospital = '635840df1a920d2b14172ede';
+
        
         try {
-            const checkEmail = await Doctor.findOne({email});
-            if(checkEmail){
-                return res.status(400).json({
-                    ok:false,
-                    msg:'Email is already created'
-                })
-            }
-            const doctor = new Doctor(req.body);
+            // const checkEmail = await Doctor.findOne({email});
+            // if(checkEmail){
+            //     return res.status(400).json({
+            //         ok:false,
+            //         msg:'Email is already created'
+            //     })
+            // }
+            const doctor = new Doctor({user:uid,hospital:hospital,...req.body});
             //Encrypt password
-            const salt = bcrypt.genSaltSync();
-            doctor.pwd = bcrypt.hashSync(pwd, salt);
+            // const salt = bcrypt.genSaltSync();
+            // doctor.pwd = bcrypt.hashSync(pwd, salt);
 
             await doctor.save();
-            const token = await generateJWT(doctor.id)
+            // const token = await generateJWT(doctor.id)
             res.json({
                 ok:true,
                 doctor,
-                token
+                // token
             })
         } catch (error) {
             console.log(error);

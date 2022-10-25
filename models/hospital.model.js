@@ -18,8 +18,8 @@ const HospitalSchema = Schema({
 
 //This is for change the way data is showed in response
 HospitalSchema.method('toJSON', function(){
-    const {__v,_id,...object} = this.toObject();
-    object.uid=_id;
+    const {__v,...object} = this.toObject();
+    
     return object;
 })
 
