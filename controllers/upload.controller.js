@@ -1,8 +1,11 @@
 const { json } = require("express");
+const path = require('path');
+const fs = require('fs');
 const {v4: uuidv4} = require('uuid');
 
 const bcrypt = require('bcryptjs');
 const { updateImage } = require("../helpers/update-image");
+const { fstat } = require("fs");
 
 
 const uploadFile =  async (req, res)=>{
@@ -61,7 +64,21 @@ file.mv(path, (err)=> {
     }
 
 
+    const getFile = (req, res)=>{
+
+      const {type, img} = req.params;
+      const defaultPath = path.join(__dirname, `../uploads/no-img.jpg`);
+      const imgPath = path.join(__dirname, `../uploads/${type}/${img}`);
+if(fs.existsSync(imgPath)){
+  res.sendFile(imgPath);
+}else{
+  res.sendFile(defaultPath);
+}
+
+
+    }
+
     module.exports ={
-    
+      getFile,
     uploadFile
     }
