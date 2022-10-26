@@ -19,20 +19,9 @@ const getDoctors =  async (req, res)=>{
 
        
         try {
-            // const checkEmail = await Doctor.findOne({email});
-            // if(checkEmail){
-            //     return res.status(400).json({
-            //         ok:false,
-            //         msg:'Email is already created'
-            //     })
-            // }
             const doctor = new Doctor({user:uid,hospital:hospital,...req.body});
-            //Encrypt password
-            // const salt = bcrypt.genSaltSync();
-            // doctor.pwd = bcrypt.hashSync(pwd, salt);
-
             await doctor.save();
-            // const token = await generateJWT(doctor.id)
+            
             res.json({
                 ok:true,
                 doctor,

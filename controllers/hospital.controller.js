@@ -15,7 +15,7 @@ const getHospitals =  async (req, res)=>{
 
     const saveHospital = async (req, res)=>{
         const {email, pwd, name} =req.body;
-        
+        console.log('HOSPITAL');
        const uid=req.uid;
        
         try {

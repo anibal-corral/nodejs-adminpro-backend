@@ -1,9 +1,8 @@
 const { json } = require("express");
 const {v4: uuidv4} = require('uuid');
-const User = require('../models/user.model');
-const Doctor = require('../models/doctor.model')
-const Hospital = require('../models/hospital.model')
+
 const bcrypt = require('bcryptjs');
+const { updateImage } = require("../helpers/update-image");
 
 
 const uploadFile =  async (req, res)=>{
@@ -30,7 +29,7 @@ msg:'No files were uploaded.'
 const file = req.files.imagen;
 const cutName = file.name.split('.');
 const fileExtension = cutName[cutName.length-1];
-const validExtensions=['png','jpg','jepg','gif'];
+const validExtensions=['png','jpg','jpeg','gif'];
 if(!validExtensions.includes(fileExtension)){
     return res.json({
         ok:false,
@@ -47,6 +46,7 @@ file.mv(path, (err)=> {
         ok:false,
         msg: "Error => " + err
       });
+      updateImage(type, id, path, fileName);
      return res.json({
         ok:true,
         msg:'File uploaded successfully ',

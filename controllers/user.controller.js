@@ -10,7 +10,7 @@ const getUsers =  async (req, res)=>{
     //  const total = await User.count();
 
    const [users, total ] =  await Promise.all([
-        User.find().skip(from).limit(3),
+        User.find().skip(from).limit(100),
         User.count()
      ])
     res.json({
@@ -20,7 +20,23 @@ const getUsers =  async (req, res)=>{
     })
 
     }
-
+    const getUser =  async (req, res)=>{
+        const id = req.params.id;
+       const user =  await User.findById(id);
+        if(!user){
+            return res.json({
+                ok:false,
+                msg: "User doesn't exist"
+            })
+        }
+         
+        res.json({
+            ok:true,
+            user
+         
+        })
+    
+        }
     const saveUser = async (req, res)=>{
         const {email, pwd, name} =req.body;
        
@@ -131,6 +147,7 @@ const updateUser=async(req,res)=>{
 
     module.exports ={
         getUsers,
+        getUser,
         saveUser,
         updateUser,
         deleteUser

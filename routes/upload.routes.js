@@ -7,6 +7,6 @@ const expressFileUpload = require('express-fileupload');
 const router = Router();
 router.use(expressFileUpload());
 // router.post('/:type/:id',[ validateJWT],uploadFile);
-router.put('/:type/:id',[ validateJWT],uploadFile);
+router.put('/:type/:id',[ ],uploadFile);
 
 module.exports = router;

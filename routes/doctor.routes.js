@@ -7,7 +7,7 @@ const { check } = require('express-validator');
 
 const router = Router();
 
-router.get('/',[ validateJWT],getDoctors);
+router.get('/',[ ],getDoctors);
 router.post('/',
 [
     validateJWT,
