@@ -19,6 +19,7 @@ app.use('/api/login',require('./routes/auth.routes'));
 app.use('/api/hospitals',require('./routes/hospital.routes'));
 app.use('/api/doctors',require('./routes/doctor.routes'));
 app.use('/api/search',require('./routes/search.routes'));
+app.use('/api/uploads', require('./routes/upload.routes'));
 
 
 app.listen(process.env.PORT, ()=>{
