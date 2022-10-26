@@ -4,14 +4,39 @@ const bcrypt = require('bcryptjs');
 const User = require("../models/user.model");
 const { generateJWT } = require("../helpers/jwt");
 const getUsers =  async (req, res)=>{
-    const users = await User.find();
+    const from = Number(req.query.from) || 0 ;
+    
+    //  const users = await User.find().skip(from).limit(3);
+    //  const total = await User.count();
+
+   const [users, total ] =  await Promise.all([
+        User.find().skip(from).limit(100),
+        User.count()
+     ])
     res.json({
         ok:true,
-        users
+        users,
+        total
     })
 
     }
-
+    const getUser =  async (req, res)=>{
+        const id = req.params.id;
+       const user =  await User.findById(id);
+        if(!user){
+            return res.json({
+                ok:false,
+                msg: "User doesn't exist"
+            })
+        }
+         
+        res.json({
+            ok:true,
+            user
+         
+        })
+    
+        }
     const saveUser = async (req, res)=>{
         const {email, pwd, name} =req.body;
        
@@ -122,6 +147,7 @@ const updateUser=async(req,res)=>{
 
     module.exports ={
         getUsers,
+        getUser,
         saveUser,
         updateUser,
         deleteUser

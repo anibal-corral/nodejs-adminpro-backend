@@ -15,7 +15,9 @@ const validateJWT = (req,res,next)=>{
     //VALIDATE TOKEN
     try {
         const {uid} = jwt.verify(token,process.env.JWT_SECRET);
-        // console.log(uid);
+        req.uid=uid
+        next();
+        
     } catch (error) {
         return res.status(401).json({
             ok:false,
@@ -24,7 +26,7 @@ const validateJWT = (req,res,next)=>{
     }
 
 
-    next();
+    
 }
 
 
