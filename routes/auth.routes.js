@@ -1,7 +1,8 @@
 const { Router} = require('express');
 const {check} =require('express-validator');
-const { login,googleSignIn } = require('../controllers/auth.controller');
+const { login,googleSignIn, renewToken } = require('../controllers/auth.controller');
 const {validateFields}=require('../middlewares/field-validate');
+const { validateJWT } = require('../middlewares/validate-jwt');
 const router = Router();
 router.post('/',[
    check('pwd',"Password is mandatory").not().isEmpty(),
@@ -12,7 +13,9 @@ router.post('/google',[
    check('token',"Google token is mandatory").not().isEmpty(),
    validateFields
 ],googleSignIn);
-
+router.get('/renew',[
+   validateJWT
+],renewToken);
 // router.get('/',getUsers);
 // router.post('/',
 // [
