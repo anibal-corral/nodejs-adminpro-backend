@@ -12,6 +12,10 @@ const HospitalSchema = Schema({
     type: Schema.Types.ObjectId,
     ref:'User',
     required:true
+   },
+   active:{
+    type:Boolean,
+    default:true
    }
 
 });
