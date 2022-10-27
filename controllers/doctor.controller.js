@@ -2,6 +2,7 @@ const { json } = require("express");
 const bcrypt = require('bcryptjs');
 
 const Doctor = require("../models/doctor.model");
+const Hospital = require("../models/hospital.model");
 const { generateJWT } = require("../helpers/jwt");
 const getDoctors =  async (req, res)=>{
     const doctors = await Doctor.find().populate('hospital').populate('user');
@@ -39,11 +40,11 @@ const getDoctors =  async (req, res)=>{
 
 
 const updateDoctor=async(req,res)=>{
-    const uid = req.params.id;
+    const id = req.params.id;
+    const uid = req.uid;
     
-    console.log(uid);
     try {
-        const doctorDB = await Doctor.findById(uid);
+        const doctorDB = await Doctor.findById(id);
         if(!doctorDB){
             return res.status(404).json({
                 ok:false,
@@ -51,29 +52,22 @@ const updateDoctor=async(req,res)=>{
             })
         }
         //Update
-        const fields = req.body;
-        delete fields.pwd;
-        delete fields.google;
-
-        if(doctorDB.email === req.body.email){
-            delete fields.email;
-        }else{
-            const checkEmail = await Doctor.findOne({email:req.body.email});
-            if(checkEmail){
-                return res.status(400).json({
-                    ok:false,
-                    msg:"Email already exists."
-                })
-            }
+        const {name, hospital} = req.body;
+        
+        //Validate if hospital exist
+        const hospitalDB = await Hospital.findById(hospital);
+        if(!hospitalDB){
+            return res.status(404).json({
+                ok:false,
+                msg: "Hospital doesn't exist"
+            })
         }
-
-
-        const doctorUpdated = await Doctor.findByIdAndUpdate(uid, fields, {new: true});
+        const doctorUpdated = await Doctor.findByIdAndUpdate(id, {name, hospital, user:uid}, {new: true});
 
 
         res.status(200).json({
             ok:true,
-            doctorUpdated
+            doctor:doctorUpdated
         })
     } catch (error) {
         console.log(error);
@@ -87,16 +81,18 @@ const updateDoctor=async(req,res)=>{
 
 
  const deleteDoctor = async(req,res)=>{
-    const uid = req.params.id;
+    const id = req.params.id;
     try {
-        const doctorDB = await Doctor.findById(uid);
+        const doctorDB = await Doctor.findById(id);
         if(!doctorDB){
             return res.status(404).json({
                 ok:false,
                 msg: "Doctor doesn't exist"
             })
         }
-        await Doctor.findByIdAndDelete(uid);
+        // await Doctor.findByIdAndDelete(id);
+        doctorDB.active=false;
+        await doctorDB.save();
 
 
         res.status(200).json({
