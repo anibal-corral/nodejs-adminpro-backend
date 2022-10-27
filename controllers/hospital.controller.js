@@ -50,11 +50,10 @@ const getHospitals =  async (req, res)=>{
 
 
 const updateHospital=async(req,res)=>{
-    const uid = req.params.id;
-    
-    console.log(uid);
+    const id = req.params.id;
+    const uid = req.uid;
     try {
-        const hospitalDB = await Hospital.findById(uid);
+        const hospitalDB = await Hospital.findById(id);
         if(!hospitalDB){
             return res.status(404).json({
                 ok:false,
@@ -62,29 +61,16 @@ const updateHospital=async(req,res)=>{
             })
         }
         //Update
-        const fields = req.body;
-        delete fields.pwd;
-        delete fields.google;
-
-        if(hospitalDB.email === req.body.email){
-            delete fields.email;
-        }else{
-            const checkEmail = await Hospital.findOne({email:req.body.email});
-            if(checkEmail){
-                return res.status(400).json({
-                    ok:false,
-                    msg:"Email already exists."
-                })
-            }
+        const changesHospital = {
+            ...req.body,
+            user:uid
         }
-
-
-        const hospitalUpdated = await Hospital.findByIdAndUpdate(uid, fields, {new: true});
+        const hospitalUpdated = await Hospital.findByIdAndUpdate(id, changesHospital, {new: true});
 
 
         res.status(200).json({
             ok:true,
-            hospitalUpdated
+            hospital:hospitalUpdated
         })
     } catch (error) {
         console.log(error);
@@ -98,21 +84,22 @@ const updateHospital=async(req,res)=>{
 
 
  const deleteHospital = async(req,res)=>{
-    const uid = req.params.id;
+    const id = req.params.id;
+    const uid = req.uid;
     try {
-        const hospitalDB = await Hospital.findById(uid);
+        const hospitalDB = await Hospital.findById(id);
         if(!hospitalDB){
             return res.status(404).json({
                 ok:false,
                 msg: "Hospital doesn't exist"
             })
         }
-        await Hospital.findByIdAndDelete(uid);
-
-
+    //    await Hospital.findByIdAndDelete(id);
+    hospitalDB.active = false
+    await hospitalDB.save()
         res.status(200).json({
             ok:true,
-            msg:"Hospital deleted"
+          msg:'Hospital deleted'
         })
     } catch (error) {
         console.log(error);
@@ -122,6 +109,7 @@ const updateHospital=async(req,res)=>{
         })
     }
 }
+
 
     module.exports ={
         getHospitals,
