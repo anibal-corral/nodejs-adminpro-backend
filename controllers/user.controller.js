@@ -106,7 +106,7 @@ const updateUser=async(req,res)=>{
 
         res.status(200).json({
             ok:true,
-            userUpdated
+            user:userUpdated
         })
     } catch (error) {
         console.log(error);
