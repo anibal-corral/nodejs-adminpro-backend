@@ -73,8 +73,6 @@ const getUsers =  async (req, res)=>{
 
 const updateUser=async(req,res)=>{
     const uid = req.params.id;
-    
-    console.log(uid);
     try {
         const userDB = await User.findById(uid);
         if(!userDB){
@@ -88,7 +86,7 @@ const updateUser=async(req,res)=>{
         delete fields.pwd;
         delete fields.google;
 
-        if(userDB.email === req.body.email){
+        if((userDB.email === req.body.email) || userDB.google){
             delete fields.email;
         }else{
             const checkEmail = await User.findOne({email:req.body.email});
@@ -99,7 +97,7 @@ const updateUser=async(req,res)=>{
                 })
             }
         }
-
+        
 
         const userUpdated = await User.findByIdAndUpdate(uid, fields, {new: true});
 
