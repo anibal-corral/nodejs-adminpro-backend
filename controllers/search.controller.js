@@ -8,7 +8,7 @@ const bcrypt = require('bcryptjs');
 const search =  async (req, res)=>{
     const term =req.params.value|| '' ;
     const regex = new RegExp(term,'i');
-    console.log('Searchig: '+ regex);
+    // console.log('Searchig: '+ regex);
 
   
 
@@ -36,7 +36,7 @@ const search =  async (req, res)=>{
         const table =req.params.table|| '' ;
         const term = req.params.search|| '' ;
         const regex = new RegExp(term,'i');
-        console.log('Searchig: COLLECTION ' + table + ' ' + term);
+        // console.log('Searchig: COLLECTION ' + table + ' ' + term);
         let data =[];
         // console.log('Searchig: '+ regex);
     switch (table) {

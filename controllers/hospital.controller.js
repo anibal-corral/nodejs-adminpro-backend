@@ -14,29 +14,13 @@ const getHospitals =  async (req, res)=>{
     }
 
     const saveHospital = async (req, res)=>{
-        const {email, pwd, name} =req.body;
-        console.log('HOSPITAL');
        const uid=req.uid;
-       
         try {
-            // const checkEmail = await Hospital.findOne({email});
-            // if(checkEmail){
-            //     return res.status(400).json({
-            //         ok:false,
-            //         msg:'Email is already created'
-            //     })
-            // }
             const hospital = new Hospital({user:uid, ...req.body});
-            //Encrypt password
-            // const salt = bcrypt.genSaltSync();
-            // hospital.pwd = bcrypt.hashSync(pwd, salt);
-
             await hospital.save();
-            const token = await generateJWT(hospital.id)
             res.json({
                 ok:true,
                 hospital,
-                // token
             })
         } catch (error) {
             console.log(error);
@@ -94,9 +78,9 @@ const updateHospital=async(req,res)=>{
                 msg: "Hospital doesn't exist"
             })
         }
-    //    await Hospital.findByIdAndDelete(id);
-    hospitalDB.active = false
-    await hospitalDB.save()
+       await Hospital.findByIdAndDelete(id);
+    // hospitalDB.active = false
+    // await hospitalDB.save()
         res.status(200).json({
             ok:true,
           msg:'Hospital deleted'

@@ -2,12 +2,13 @@ const { Router} = require('express');
 
 const { validateJWT } = require('../middlewares/validate-jwt');
 const {validateFields} = require('../middlewares/field-validate')
-const {getDoctors,saveDoctor,updateDoctor,deleteDoctor} =require('../controllers/doctor.controller');
+const {getDoctors,getDoctor,saveDoctor,updateDoctor,deleteDoctor} =require('../controllers/doctor.controller');
 const { check } = require('express-validator');
 
 const router = Router();
 
-router.get('/',[ ],getDoctors);
+router.get('/',[validateJWT ],getDoctors);
+router.get('/:id',[ validateJWT],getDoctor);
 router.post('/',
 [
     validateJWT,

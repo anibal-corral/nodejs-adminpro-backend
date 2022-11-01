@@ -5,12 +5,12 @@ const User = require("../models/user.model");
 const { generateJWT } = require("../helpers/jwt");
 const getUsers =  async (req, res)=>{
     const from = Number(req.query.from) || 0 ;
-    
+    const limit = 5;
     //  const users = await User.find().skip(from).limit(3);
     //  const total = await User.count();
 
    const [users, total ] =  await Promise.all([
-        User.find().skip(from).limit(100),
+        User.find().skip(from).limit(limit),
         User.count()
      ])
     res.json({
@@ -21,8 +21,10 @@ const getUsers =  async (req, res)=>{
 
     }
     const getUser =  async (req, res)=>{
+
         const id = req.params.id;
-       const user =  await User.findById(id);
+        try {
+            const user =  await User.findById(id);
         if(!user){
             return res.json({
                 ok:false,
@@ -35,6 +37,14 @@ const getUsers =  async (req, res)=>{
             user
          
         })
+            
+        } catch (error) {
+            return res.json({
+                ok:false,
+                msg: "User doesn't exist"
+            })     
+        }
+       
     
         }
     const saveUser = async (req, res)=>{
