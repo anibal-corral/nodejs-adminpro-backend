@@ -1,5 +1,5 @@
 const getFrontEndMenu =(role='USER_ROLE')=>{
-  console.log('getting front menu');
+  // console.log('getting front menu');
 
     const menu= [
         {
