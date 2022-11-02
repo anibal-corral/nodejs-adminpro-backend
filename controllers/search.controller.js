@@ -2,20 +2,13 @@ const { json } = require("express");
 const User = require('../models/user.model');
 const Doctor = require('../models/doctor.model')
 const Hospital = require('../models/hospital.model')
-const bcrypt = require('bcryptjs');
 
 
 const search =  async (req, res)=>{
     const term =req.params.value|| '' ;
     const regex = new RegExp(term,'i');
-    // console.log('Searchig: '+ regex);
 
-  
-
-    //  const users = await User.find().skip(from).limit(3);
-    //  const total = await User.count();
-
-   const [users, hospitals, doctors ] =  await Promise.all([
+   const [users, doctors, hospitals ] =  await Promise.all([
         User.find({name:regex}),
         Doctor.find({name:regex}),
         Hospital.find({name:regex}),
